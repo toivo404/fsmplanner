@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>FSM Planner</title>
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+    <link rel="stylesheet" href="fsm_style.css">
+</head>
+<body>
+
+<!-- ── Toolbar ─────────────────────────────────────────────────────── -->
+<div id="toolbar">
+    <button onclick="UI.addStateDialog()">➕ State</button>
+    <span class="sep"></span>
+    <button onclick="ImportFSM.trigger()">📂 Import JSON</button>
+    <button onclick="ExportJSON.download()">💾 Export JSON</button>
+    <span class="sep"></span>
+    <button onclick="ExportCode.showModal()">⚙ Export Code</button>
+    <button onclick="TestGen.showModal()">🧪 Generate Tests</button>
+    <span class="hint">Right-click canvas to add state · Click node→node to connect · Del to remove selected</span>
+
+    <input type="file" id="importFile" accept=".json" style="display:none"
+           onchange="ImportFSM.handleFile(event)">
+</div>
+
+<!-- ── Canvas ──────────────────────────────────────────────────────── -->
+<div id="cy"></div>
+
+<!-- ── Status bar ──────────────────────────────────────────────────── -->
+<div id="statusbar">
+    States: <span id="stat-states">0</span> &nbsp;|&nbsp;
+    Transitions: <span id="stat-transitions">0</span> &nbsp;|&nbsp;
+    Initial: <span id="stat-initial">none</span>
+</div>
+
+<!-- ── Context menu ────────────────────────────────────────────────── -->
+<div id="ctx-menu" class="ctx-menu" style="display:none">
+    <div id="ctx-items"></div>
+</div>
+
+<!-- ── Code Export Modal ───────────────────────────────────────────── -->
+<div id="modal-code" class="modal" style="display:none">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span>⚙ Export Code</span>
+            <button class="modal-close" onclick="ExportCode.hideModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-controls">
+                <label>Language:
+                    <select id="code-lang" onchange="ExportCode.update()">
+                        <option value="c">C</option>
+                        <option value="cpp">C++</option>
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="java">Java</option>
+                        <option value="csharp">C#</option>
+                        <option value="plantuml">PlantUML</option>
+                        <option value="mermaid">Mermaid</option>
+                    </select>
+                </label>
+                <button onclick="ExportCode.copyToClipboard()">📋 Copy</button>
+                <button onclick="ExportCode.downloadCode()">💾 Download</button>
+            </div>
+            <pre id="code-output"></pre>
+        </div>
+    </div>
+</div>
+
+<!-- ── Test Cases Modal ────────────────────────────────────────────── -->
+<div id="modal-tests" class="modal" style="display:none">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span>🧪 Generated Test Cases</span>
+            <button class="modal-close" onclick="TestGen.hideModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-controls">
+                <button onclick="TestGen.copyToClipboard()">📋 Copy</button>
+                <button onclick="TestGen.download()">💾 Download</button>
+            </div>
+            <pre id="test-output"></pre>
+        </div>
+    </div>
+</div>
+
+<!-- ── Scripts (load order matters: core → ui → import → exports → main) -->
+<script src="js/fsm_core.js"></script>
+<script src="js/fsm_ui.js"></script>
+<script src="js/fsm_import.js"></script>
+<script src="js/fsm_export_json.js"></script>
+<script src="js/fsm_export_code.js"></script>
+<script src="js/fsm_testgen.js"></script>
+<script src="js/fsm_main.js"></script>
+
+</body>
+</html>
